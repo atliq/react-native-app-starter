@@ -74,5 +74,5 @@ root
 ## Predefined UI
 
 ![](https://github.com/atliq/react-native-starter/blob/master/Images/login.png?raw=true)
-![](https://github.com/atliq/react-native-starter/blob/master/Images/tab.png?raw=true?raw=true)
+![](https://github.com/atliq/react-native-starter/blob/master/Images/tab.png?raw=true)
 ![](https://github.com/atliq/react-native-starter/blob/master/Images/settings.png?raw=true)

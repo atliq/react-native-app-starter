@@ -1,0 +1,37 @@
+{
+  "name": "@atliq/react-native-starter",
+  "version": "1.0.0",
+  "description": "A React Native Template.",
+  "main": "index.js",
+  "bin": {
+    "@atliq/react-native-starter": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native",
+    "boilerplate",
+    "starter",
+    "template",
+    "dark-theme",
+    "localization",
+    "react-tab",
+    "redux",
+    "redux-saga",
+    "react-redux",
+    "redux-persist",
+    "theme",
+    "hooks",
+    "theme-context",
+    "react-native-theme"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonalmaniya/react-native-boots.git"
+  },
+  "author": {
+    "name": "Atliq Technologies"
+  },
+  "license": "ISC"
+}

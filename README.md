@@ -1,4 +1,4 @@
-# @atliq/react-native-starter
+# react-native-app-starter
 
 This project is a [React Native](https://facebook.github.io/react-native/) boilerplate that can be used to kickstart a mobile application.
 
@@ -7,7 +7,7 @@ The boilerplate provides **an optimized architecture for building solid cross-pl
 #### Quick start
 
 ```
-$ npx @atliq/react-native-starter <ProjectName>
+$ npx react-native-app-starter <ProjectName>
 
 $ cd <ProjectName>
 

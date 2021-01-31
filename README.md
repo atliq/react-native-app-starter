@@ -70,9 +70,3 @@ root
 - UI for Login, Tabs and Settings
 
 - Fastlane setup
-
-<br/>
-
-## License
-
-This project is released under the (IST).

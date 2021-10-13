@@ -62,4 +62,4 @@ To get started,
   `);
 };
 
-return main("https://github.com/sonalmaniya/react-native-boots.git");
+return main("https://github.com/atliq/react-native-boilerplate.git");

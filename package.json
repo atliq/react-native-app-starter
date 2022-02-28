@@ -33,5 +33,9 @@
   "author": {
     "name": "Atliq Technologies"
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cli-select": "^1.1.2",
+    "commander": "^9.0.0"
+  }
 }

@@ -31,7 +31,7 @@ function runCommand(command, args, options = undefined) {
   });
 }
 
-const main = async (repositoryUrl, directoryName, husky) => {
+const main = async (repositoryUrl, directoryName, husky, TypeScript) => {
   console.log(`Creating new project ${directoryName}`);
   if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
     return console.error(`
@@ -54,10 +54,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     const devDependencyList = Object.keys(packageJson.devDependencies);
 
     console.log("Now, installing react-native...");
-    if (
-      repositoryUrl ===
-      "https://github.com/atliq/react-native-boilerplate-ts.git"
-    ) {
+    if (TypeScript) {
       await runCommand("npx", [
         "react-native",
         "init",
@@ -103,10 +100,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
       await runCommand("mv", [`${tmpDir}/.husky`, `${directoryName}`]);
     }
 
-    if (
-      repositoryUrl ===
-      "https://github.com/atliq/react-native-boilerplate-ts.git"
-    ) {
+    if (TypeScript) {
       await runCommand("rm", ["-rf", `${directoryName}/index.js`]);
       await runCommand("mv", [`${tmpDir}/index.js`, `${directoryName}`]);
       await runCommand("rm", ["-rf", `${directoryName}/App.tsx`]);
@@ -161,42 +155,40 @@ if (!directoryName || directoryName.length === 0) {
   });
 
   readline.question(`What's your project name?`, (name) => {
-    console.log(`Hi ${name}!`);
+    console.log(`Creating ${name}!`);
     readline.close();
     directoryName = name;
     cliSelect({
       values: ["TypeScript", "Javascript"],
     }).then((value) => {
-      console.log(value);
       console.log(`Generating... ${value.value} Template`);
       console.log(`Do you want to install husky`);
       cliSelect({
         values: ["Yes", "No"],
       }).then((husky) => {
-        console.log(value);
         if (husky.value === "Yes") {
           if (value.value === "TypeScript") {
-            main(tsURL, directoryName, true);
+            main(tsURL, directoryName, true, true);
           } else {
-            main(jsURL, directoryName, true);
+            main(jsURL, directoryName, true, false);
           }
         } else {
           if (value.value === "TypeScript") {
-            main(tsURL, directoryName, false);
+            main(tsURL, directoryName, false, true);
           } else {
-            main(jsURL, directoryName, false);
+            main(jsURL, directoryName, false, false);
           }
         }
       });
     });
     if (programOptions.ts) {
       console.log("Generating... Typescript Template");
-      return main(tsURL, directoryName);
+      return main(tsURL, directoryName, false, true);
     }
 
     if (programOptions.js) {
       console.log("Generating... JS Template");
-      return main(jsURL, directoryName);
+      return main(jsURL, directoryName, false, false);
     }
   });
   return;
@@ -211,35 +203,33 @@ if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
 
 if (programOptions.ts) {
   console.log("Generating... Typescript Template");
-  return main(tsURL, directoryName);
+  return main(tsURL, directoryName, false, true);
 }
 
 if (programOptions.js) {
   console.log("Generating... JS Template");
-  return main(jsURL, directoryName);
+  return main(jsURL, directoryName, false, false);
 }
 
 cliSelect({
   values: ["TypeScript", "Javascript"],
 }).then((value) => {
-  console.log(value);
   console.log(`Generating... ${value.value} Template`);
   console.log(`Do you want to install husky`);
   cliSelect({
     values: ["Yes", "No"],
   }).then((husky) => {
-    console.log(value);
     if (husky.value === "Yes") {
       if (value.value === "TypeScript") {
-        main(tsURL, directoryName, true);
+        main(tsURL, directoryName, true, true);
       } else {
-        main(jsURL, directoryName, true);
+        main(jsURL, directoryName, true, false);
       }
     } else {
       if (value.value === "TypeScript") {
-        main(tsURL, directoryName, false);
+        main(tsURL, directoryName, false, true);
       } else {
-        main(jsURL, directoryName, false);
+        main(jsURL, directoryName, false, false);
       }
     }
   });

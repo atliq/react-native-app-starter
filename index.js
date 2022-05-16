@@ -84,7 +84,34 @@ const main = async (repositoryUrl, directoryName, husky) => {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     }
-
+    const projectDirectories = directoryName.split("/");
+    await runCommand("find", [
+      `${tmpDir}/android/app/src/main/res/drawable/`,
+      "-type",
+      "f",
+      "-name",
+      "*.png",
+      "-exec",
+      "cp",
+      "{}",
+      `${directoryName}/android/app/src/main/res/drawable/`,
+      ";",
+    ]);
+    await runCommand("find", [
+      `${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/`,
+      "-type",
+      "d",
+      "-name",
+      "*.imageset",
+      "-exec",
+      "cp",
+      "-R",
+      "{}",
+      `${directoryName}/ios/${
+        projectDirectories[projectDirectories.length - 1]
+      }/Images.xcassets/`,
+      ";",
+    ]);
     await runCommand("mv", [`${tmpDir}/App`, `${directoryName}`]);
     await runCommand("mv", [`${tmpDir}/.env`, `${directoryName}`]);
     await runCommand("mv", [`${tmpDir}/fastlane`, `${directoryName}`]);

@@ -144,6 +144,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     await runCommand("rm", ["-rf", `${directoryName}/tsconfig.json`]);
     await runCommand("mv", [`${tmpDir}/babel.config.js`, `${directoryName}`]);
     await runCommand("mv", [`${tmpDir}/tsconfig.json`, `${directoryName}`]);
+    await runCommand("mv", [`${tmpDir}/moduleResolver.js`, `${directoryName}`]);
     await runCommand("mv", [`${tmpDir}/modules.json`, `${directoryName}`]);
 
     console.log(`Application generated... its ready to use.

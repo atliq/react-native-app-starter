@@ -1,8 +1,9 @@
 #! /usr/bin/env node
-const { spawn } = require("child_process");
+
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const shell = require("shelljs");
 
 const { program } = require("commander");
 const cliSelect = require("cli-select");
@@ -13,26 +14,12 @@ program.parse();
 
 const programOptions = program.opts();
 
-function runCommand(command, args, options = undefined) {
-  const spawned = spawn(command, args, options);
-
-  return new Promise((resolve) => {
-    spawned.stdout.on("data", (data) => {
-      console.log(data.toString());
-    });
-
-    spawned.stderr.on("data", (data) => {
-      console.error(data.toString());
-    });
-
-    spawned.on("close", () => {
-      resolve();
-    });
-  });
-}
-
 const main = async (repositoryUrl, directoryName, husky) => {
   console.log(`Creating new project ${directoryName}`);
+  console.log(`Installing Yarn`);
+  shell.exec("npm install -g yarn", (code, stdout, stderr) => {
+    console.log(stdout);
+  });
   if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
     return console.error(`
         Invalid directory name.
@@ -40,15 +27,18 @@ const main = async (repositoryUrl, directoryName, husky) => {
         `);
   }
   //Get the name of the app-directory to make
-  let tmpDir;
+  let tmpDir = "temp";
   const appPrefix = "reactStarter";
   try {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
-    //1. Clone the repository into the given name
-    await runCommand("git", ["clone", repositoryUrl, tmpDir]);
+    // tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
+    // tmpDir = shell.tempdir();
+    shell.mkdir("temp");
+
+    shell.exec(`git clone ${repositoryUrl} ${tmpDir}`);
 
     //2. get the json from package.json
     const packageJsonRaw = fs.readFileSync(`${tmpDir}/package.json`);
+
     const packageJson = JSON.parse(packageJsonRaw);
     const dependencyList = Object.keys(packageJson.dependencies);
     const devDependencyList = Object.keys(packageJson.devDependencies);
@@ -58,66 +48,53 @@ const main = async (repositoryUrl, directoryName, husky) => {
       repositoryUrl ===
       "https://github.com/atliq/react-native-boilerplate-ts.git"
     ) {
-      await runCommand("npx", [
-        "react-native",
-        "init",
-        directoryName,
-        "--template",
-        "react-native-template-typescript",
-      ]);
+      shell.exec(
+        `npx react-native init ${directoryName} --template react-native-template-typescript`
+      );
     } else {
-      await runCommand("npx", ["react-native", "init", directoryName]);
+      shell.exec(`npx react-native init ${directoryName}`);
     }
 
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
-    await runCommand("yarn", ["add", ...dependencyList], {
+    shell.exec(`yarn add ${dependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
-
-    await runCommand("yarn", ["add", "--dev", ...devDependencyList], {
+    shell.exec(`yarn add --dev ${devDependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
 
     if (!husky) {
-      await runCommand("yarn", ["remove", "--dev", "husky"], {
+      shell.exec(`yarn remove --dev husky`, {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     }
     const projectDirectories = directoryName.split("/");
-    await runCommand("find", [
-      `${tmpDir}/android/app/src/main/res/drawable/`,
-      "-type",
-      "f",
-      "-name",
-      "*.png",
-      "-exec",
-      "cp",
-      "{}",
-      `${directoryName}/android/app/src/main/res/drawable/`,
-      ";",
-    ]);
-    await runCommand("find", [
-      `${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/`,
-      "-type",
-      "d",
-      "-name",
-      "*.imageset",
-      "-exec",
-      "cp",
-      "-R",
-      "{}",
-      `${directoryName}/ios/${
-        projectDirectories[projectDirectories.length - 1]
-      }/Images.xcassets/`,
-      ";",
-    ]);
-    await runCommand("mv", [`${tmpDir}/App`, `${directoryName}`]);
-    await runCommand("mv", [`${tmpDir}/.env`, `${directoryName}`]);
-    await runCommand("mv", [`${tmpDir}/fastlane`, `${directoryName}`]);
+
+    shell.ls(`${tmpDir}/android/app/src/main/res/drawable/`).forEach((file) => {
+      shell.cp(
+        "-rf",
+        `${tmpDir}/android/app/src/main/res/drawable/${file}`,
+        `${directoryName}/android/app/src/main/res/drawable/`
+      );
+    });
+    shell
+      .ls(`${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/`)
+      .forEach((file) => {
+        shell.cp(
+          "-rf",
+          `${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/${file}`,
+          `${directoryName}/ios/${
+            projectDirectories[projectDirectories.length - 1]
+          }/Images.xcassets/`
+        );
+      });
+    shell.mv(`${tmpDir}/App`, `${directoryName}`);
+    shell.mv(`${tmpDir}/.env`, `${directoryName}`);
+    shell.mv(`${tmpDir}/fastlane`, `${directoryName}`);
 
     if (os.type() === "Darwin") {
-      await runCommand("npx", ["pod-install"], {
+      shell.exec(`npx pod-install`, {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     } else {
@@ -125,33 +102,34 @@ const main = async (repositoryUrl, directoryName, husky) => {
     }
 
     if (husky) {
-      await runCommand("yarn", ["run", "husky", "install"]);
-      await runCommand("rm", ["-rf", `${directoryName}/.husky`]);
-      await runCommand("mv", [`${tmpDir}/.husky`, `${directoryName}`]);
+      shell.exec(`npx husky install`);
+      shell.rm("-rf", `${directoryName}/.husky`);
+      shell.mv(`tmpDir}/.husky`, `${directoryName}`);
     }
 
     if (
       repositoryUrl ===
       "https://github.com/atliq/react-native-boilerplate-ts.git"
     ) {
-      await runCommand("rm", ["-rf", `${directoryName}/index.js`]);
-      await runCommand("mv", [`${tmpDir}/index.js`, `${directoryName}`]);
-      await runCommand("rm", ["-rf", `${directoryName}/App.tsx`]);
+      shell.rm("-rf", `${directoryName}/index.js`);
+      shell.mv(`${tmpDir}/index.js`, `${directoryName}`);
+      shell.rm("-rf", `${directoryName}/App.tsx`);
     } else {
-      await runCommand("rm", ["-rf", `${directoryName}/App.js`]);
+      shell.rm("-rf", `${directoryName}/App.js`);
     }
-    await runCommand("rm", ["-rf", `${directoryName}/babel.config.js`]);
-    await runCommand("rm", ["-rf", `${directoryName}/tsconfig.json`]);
-    await runCommand("mv", [`${tmpDir}/babel.config.js`, `${directoryName}`]);
-    await runCommand("mv", [`${tmpDir}/tsconfig.json`, `${directoryName}`]);
-    await runCommand("mv", [`${tmpDir}/moduleResolver.js`, `${directoryName}`]);
-    await runCommand("mv", [`${tmpDir}/modules.json`, `${directoryName}`]);
+    shell.rm("-rf", `${directoryName}/babel.config.js`);
+    shell.rm("-rf", `${directoryName}/tsconfig.json`);
+    shell.mv(`${tmpDir}/babel.config.js`, `${directoryName}`);
+    shell.mv(`${tmpDir}/tsconfig.json`, `${directoryName}`);
+    shell.mv(`${tmpDir}/moduleResolver.js`, `${directoryName}`);
+    shell.mv(`${tmpDir}/modules.json`, `${directoryName}`);
 
     console.log(`Application generated... its ready to use.
   To get started, 
   - cd ${directoryName}
   - npm run dev
   `);
+
     // - If not start try to delete watchman watches by running following command:
     // - watchman watch-del-all
     // - Then start metro server clearing its cache by running following command:
@@ -201,7 +179,7 @@ if (!directoryName || directoryName.length === 0) {
       cliSelect({
         values: ["Yes", "No"],
       }).then((husky) => {
-        console.log(value);
+        console.log(husky);
         if (husky.value === "Yes") {
           if (value.value === "TypeScript") {
             main(tsURL, directoryName, true);
@@ -256,7 +234,7 @@ cliSelect({
   cliSelect({
     values: ["Yes", "No"],
   }).then((husky) => {
-    console.log(value);
+    console.log(husky);
     if (husky.value === "Yes") {
       if (value.value === "TypeScript") {
         main(tsURL, directoryName, true);

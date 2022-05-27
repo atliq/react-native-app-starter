@@ -1,6 +1,6 @@
 {
   "name": "react-native-app-starter",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A React Native Template.",
   "main": "index.js",
   "bin": {
@@ -36,6 +36,7 @@
   "license": "ISC",
   "dependencies": {
     "cli-select": "^1.1.2",
-    "commander": "^9.0.0"
+    "commander": "^9.0.0",
+    "shelljs": "^0.8.5"
   }
 }

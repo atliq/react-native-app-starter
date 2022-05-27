@@ -2,7 +2,6 @@
 
 const fs = require("fs");
 const os = require("os");
-const path = require("path");
 const shell = require("shelljs");
 
 const { program } = require("commander");
@@ -28,10 +27,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
   }
   //Get the name of the app-directory to make
   let tmpDir = "temp";
-  const appPrefix = "reactStarter";
   try {
-    // tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), appPrefix));
-    // tmpDir = shell.tempdir();
     shell.mkdir("temp");
 
     shell.exec(`git clone ${repositoryUrl} ${tmpDir}`);

@@ -7,8 +7,6 @@ const shell = require("shelljs");
 const { program } = require("commander");
 const cliSelect = require("cli-select");
 
-program.option("--ts").option("--js");
-
 program.parse();
 
 const programOptions = program.opts();
@@ -120,6 +118,8 @@ const main = async (repositoryUrl, directoryName, husky) => {
   - npm run dev
   `);
 
+    console.log("Please, add \"postinstall\": \"sh postinstall\" in script to package.json ");
+
     // - If not start try to delete watchman watches by running following command:
     // - watchman watch-del-all
     // - Then start metro server clearing its cache by running following command:
@@ -142,13 +142,9 @@ const main = async (repositoryUrl, directoryName, husky) => {
 };
 
 const tsURL = "https://github.com/atliq/react-native-boilerplate-ts.git";
-const jsURL = "https://github.com/atliq/react-native-boilerplate.git";
 
 let directoryName = process.argv[2];
 
-if (process.argv[2] === "--ts" || process.argv[2] === "--js") {
-  directoryName = "";
-}
 
 if (!directoryName || directoryName.length === 0) {
   const readline = require("readline").createInterface({
@@ -160,40 +156,23 @@ if (!directoryName || directoryName.length === 0) {
     console.log(`Hi ${name}!`);
     readline.close();
     directoryName = name;
+
+    console.log(`Do you want to install husky`);
     cliSelect({
-      values: ["TypeScript", "Javascript"],
-    }).then((value) => {
-      console.log(value);
-      console.log(`Generating... ${value.value} Template`);
-      console.log(`Do you want to install husky`);
-      cliSelect({
-        values: ["Yes", "No"],
-      }).then((husky) => {
-        console.log(husky);
-        if (husky.value === "Yes") {
-          if (value.value === "TypeScript") {
-            main(tsURL, directoryName, true);
-          } else {
-            main(jsURL, directoryName, true);
-          }
-        } else {
-          if (value.value === "TypeScript") {
-            main(tsURL, directoryName, false);
-          } else {
-            main(jsURL, directoryName, false);
-          }
-        }
-      });
+      values: ["Yes", "No"],
+    }).then((husky) => {
+      console.log(husky);
+      if (husky.value === "Yes") {
+        main(tsURL, directoryName, true);
+      } else {
+        main(tsURL, directoryName, false);
+      }
     });
     if (programOptions.ts) {
       console.log("Generating... Typescript Template");
       return main(tsURL, directoryName);
     }
 
-    if (programOptions.js) {
-      console.log("Generating... JS Template");
-      return main(jsURL, directoryName);
-    }
   });
   return;
 }
@@ -210,33 +189,18 @@ if (programOptions.ts) {
   return main(tsURL, directoryName);
 }
 
-if (programOptions.js) {
-  console.log("Generating... JS Template");
-  return main(jsURL, directoryName);
-}
+console.log(`Generating... ${value.value} Template`);
+console.log(`Do you want to install husky`);
 
 cliSelect({
-  values: ["TypeScript", "Javascript"],
-}).then((value) => {
-  console.log(value);
-  console.log(`Generating... ${value.value} Template`);
-  console.log(`Do you want to install husky`);
-  cliSelect({
-    values: ["Yes", "No"],
-  }).then((husky) => {
-    console.log(husky);
-    if (husky.value === "Yes") {
-      if (value.value === "TypeScript") {
-        main(tsURL, directoryName, true);
-      } else {
-        main(jsURL, directoryName, true);
-      }
-    } else {
-      if (value.value === "TypeScript") {
-        main(tsURL, directoryName, false);
-      } else {
-        main(jsURL, directoryName, false);
-      }
-    }
-  });
+  values: ["Yes", "No"],
+}).then((husky) => {
+  console.log(husky);
+  if (husky.value === "Yes") {
+    main(tsURL, directoryName, true);
+  } else {
+    main(tsURL, directoryName, false);
+
+  }
 });
+

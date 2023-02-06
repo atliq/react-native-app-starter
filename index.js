@@ -40,16 +40,9 @@ const main = async (repositoryUrl, directoryName, husky) => {
     const devDependencyList = Object.keys(packageJson.devDependencies);
 
     console.log("Now, installing react-native...");
-    if (
-      repositoryUrl ===
-      "https://github.com/atliq/react-native-boilerplate-ts.git"
-    ) {
-      shell.exec(
-        `npx react-native init ${directoryName} --template react-native-template-typescript`
-      );
-    } else {
-      shell.exec(`npx react-native init ${directoryName}`);
-    }
+
+    shell.exec(`npx react-native init ${directoryName}`);
+
 
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
@@ -80,8 +73,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
         shell.cp(
           "-rf",
           `${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/${file}`,
-          `${directoryName}/ios/${
-            projectDirectories[projectDirectories.length - 1]
+          `${directoryName}/ios/${projectDirectories[projectDirectories.length - 1]
           }/Images.xcassets/`
         );
       });
@@ -119,6 +111,8 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/tsconfig.json`, `${directoryName}`);
     shell.mv(`${tmpDir}/moduleResolver.js`, `${directoryName}`);
     shell.mv(`${tmpDir}/modules.json`, `${directoryName}`);
+    shell.mv(`${tmpDir}/postinstall`, `${directoryName}`);
+    shell.mv(`${tmpDir}/.prettierrc.js`, `${directoryName}`);
 
     console.log(`Application generated... its ready to use.
   To get started, 

@@ -189,7 +189,6 @@ if (programOptions.ts) {
   return main(tsURL, directoryName);
 }
 
-console.log(`Generating... ${value.value} Template`);
 console.log(`Do you want to install husky`);
 
 cliSelect({
@@ -200,7 +199,6 @@ cliSelect({
     main(tsURL, directoryName, true);
   } else {
     main(tsURL, directoryName, false);
-
   }
 });
 

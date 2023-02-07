@@ -73,21 +73,24 @@ root
 
 ## Predefined UI
 
-<br>
-<p align="center">
-  <img alt="Image Capture" src="https://iili.io/H1D2Q6v.png" width="45%"
-  >
-&nbsp; &nbsp; &nbsp; &nbsp;
+<details>
+  <summary>Expand for screenshots</summary>
+<table>
+  <tr><td colspan=2><strong>iOS</strong></td></tr>
+  <tr>
+    <td><p align="center"><img src="https://iili.io/H1D2Q6v.png"  width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/HE9k7RV.png" width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/H1DFNrx.png" width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/HEH6Q2t.png" width="200" height="400"/></p></td>
+  </tr>
+  <tr><td colspan=2><strong>Android</strong></td></tr>
+  <tr>
+     <td><p align="center"><img src="https://iili.io/HEJxT8B.png"  width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/HEJxWut.png" width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/HEJxvcl.png" width="200" height="400"/></p></td>
+    <td><p align="center"><img src="https://iili.io/HEJxgA7.png" width="200" height="400"/></p></td>
+  </tr>  
+  </tr>
+</table>
+</details>
 
-<div style="width:"45%"">
-https://user-images.githubusercontent.com/68548417/217155305-a7986f8c-789c-4006-910a-84c13993eb99.mp4
-</div>
-<br>
-<br>
-  <img alt="Image Capture" src="https://iili.io/H1DFNrx.png" width="45%"
-  >
-  &nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Image Capture" src="https://iili.io/H1DKr92.png" width="45%"
-  >
-</p>
-<br>

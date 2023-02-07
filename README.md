@@ -75,13 +75,17 @@ root
 
 <br>
 <p align="center">
-  <img alt="Image Capture" src="https://iili.io/H1D2Q6v.png" width="25%"
+  <img alt="Image Capture" src="https://iili.io/H1D2Q6v.png" width="45%"
   >
 &nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Image Capture" src="https://iili.io/H1DFNrx.png" width="25%"
+ <img alt="Image Capture" src="https://iili.io/HE9k7RV.png" width="45%"
+  >
+<br>
+&nbsp; &nbsp; &nbsp; &nbsp;
+  <img alt="Image Capture" src="https://iili.io/H1DFNrx.png" width="45%"
   >
   &nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Image Capture" src="https://iili.io/H1DKr92.png" width="25%"
+  <img alt="Image Capture" src="https://iili.io/H1DKr92.png" width="45%"
   >
 </p>
 <br>

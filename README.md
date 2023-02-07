@@ -78,9 +78,10 @@ root
   <img alt="Image Capture" src="https://iili.io/H1D2Q6v.png" width="45%"
   >
 &nbsp; &nbsp; &nbsp; &nbsp;
- <video preload="auto"  width="45%"  autoplay>
-   <source src="https://drive.google.com/uc?export=download&id=1kV2N28i1xYrxKCgcoOMloZ1ivU0CgUac" type='video/mp4'>
-</video>
+
+<div style="width:"45%"">
+https://user-images.githubusercontent.com/68548417/217155305-a7986f8c-789c-4006-910a-84c13993eb99.mp4
+</div>
 <br>
 <br>
   <img alt="Image Capture" src="https://iili.io/H1DFNrx.png" width="45%"

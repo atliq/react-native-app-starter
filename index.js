@@ -90,7 +90,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     if (husky) {
       shell.exec(`npx husky install`);
       shell.rm("-rf", `${directoryName}/.husky`);
-      shell.mv(`tmpDir}/.husky`, `${directoryName}`);
+      shell.mv(`${tmpDir}/.husky`, `${directoryName}`);
     }
 
     if (

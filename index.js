@@ -41,7 +41,6 @@ const main = async (repositoryUrl, directoryName, husky) => {
 
     shell.exec(`npx react-native init ${directoryName}`);
 
-
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
     shell.exec(`yarn add ${dependencyList.join(" ")}`, {
@@ -71,7 +70,8 @@ const main = async (repositoryUrl, directoryName, husky) => {
         shell.cp(
           "-rf",
           `${tmpDir}/ios/boilerPlateTypescript/Images.xcassets/${file}`,
-          `${directoryName}/ios/${projectDirectories[projectDirectories.length - 1]
+          `${directoryName}/ios/${
+            projectDirectories[projectDirectories.length - 1]
           }/Images.xcassets/`
         );
       });
@@ -93,12 +93,9 @@ const main = async (repositoryUrl, directoryName, husky) => {
       shell.mv(`${tmpDir}/.husky`, `${directoryName}`);
     }
 
-    if (
-      repositoryUrl ===
-      "https://github.com/atliq/react-native-boilerplate-ts.git"
-    ) {
+    if (repositoryUrl === tsURL) {
       shell.rm("-rf", `${directoryName}/index.js`);
-      shell.mv(`${tmpDir}/index.js`, `${directoryName}`);
+      shell.mv(`${tmpDir}/index.ts`, `${directoryName}`);
       shell.rm("-rf", `${directoryName}/App.tsx`);
     } else {
       shell.rm("-rf", `${directoryName}/App.js`);
@@ -112,13 +109,18 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/postinstall`, `${directoryName}`);
     shell.mv(`${tmpDir}/.prettierrc.js`, `${directoryName}`);
 
+    console.log("Adding additional scripts...");
+    addScripts(directoryName);
+
     console.log(`Application generated... its ready to use.
   To get started, 
   - cd ${directoryName}
   - npm run dev
   `);
 
-    console.log("Please, add \"postinstall\": \"sh postinstall\" in script to package.json ");
+    // console.log(
+    //   'Please, add "postinstall": "sh postinstall" in script to package.json '
+    // );
 
     // - If not start try to delete watchman watches by running following command:
     // - watchman watch-del-all
@@ -141,10 +143,22 @@ const main = async (repositoryUrl, directoryName, husky) => {
   }
 };
 
+const addScripts = (directory) => {
+  let packageJSON = JSON.parse(
+    fs.readFileSync(`${directory}/package.json`, "utf8")
+  );
+  let scripts = packageJSON.scripts;
+  scripts.postinstall = "sh postinstall";
+  fs.writeFileSync(
+    `${directory}/package.json`,
+    JSON.stringify(packageJSON, null, 2)
+  );
+  console.log("Added postinstall script");
+};
+
 const tsURL = "https://github.com/atliq/react-native-boilerplate-ts.git";
 
 let directoryName = process.argv[2];
-
 
 if (!directoryName || directoryName.length === 0) {
   const readline = require("readline").createInterface({
@@ -172,7 +186,6 @@ if (!directoryName || directoryName.length === 0) {
       console.log("Generating... Typescript Template");
       return main(tsURL, directoryName);
     }
-
   });
   return;
 }
@@ -201,4 +214,3 @@ cliSelect({
     main(tsURL, directoryName, false);
   }
 });
-

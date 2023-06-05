@@ -23,11 +23,20 @@ const main = async (repositoryUrl, directoryName, husky) => {
         Usage : '@atliq/react-native-starter name_of_app'
         `);
   }
-  //Get the name of the app-directory to make
-  let tmpDir = "temp";
-  try {
-    shell.mkdir("temp");
 
+  const randomNameGenerator = num => {
+    let res = '';
+    for(let i = 0; i < num; i++){
+       const random = Math.floor(Math.random() * 27);
+       res += String.fromCharCode(97 + random);
+    };
+    return res;
+ };
+
+  //Get the name of the app-directory to make
+  let tmpDir = "temp" + randomNameGenerator(5);
+  try {
+    
     shell.exec(`git clone ${repositoryUrl} ${tmpDir}`);
 
     //2. get the json from package.json
@@ -95,7 +104,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
 
     if (repositoryUrl === tsURL) {
       shell.rm("-rf", `${directoryName}/index.js`);
-      shell.mv(`${tmpDir}/index.ts`, `${directoryName}`);
+      shell.mv(`${tmpDir}/index.js`, `${directoryName}`);
       shell.rm("-rf", `${directoryName}/App.tsx`);
     } else {
       shell.rm("-rf", `${directoryName}/App.js`);

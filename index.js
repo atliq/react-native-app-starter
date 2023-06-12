@@ -117,6 +117,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/modules.json`, `${directoryName}`);
     shell.mv(`${tmpDir}/postinstall`, `${directoryName}`);
     shell.mv(`${tmpDir}/.prettierrc.js`, `${directoryName}`);
+    shell.mv(`${tmpDir}/env.config`, `${directoryName}`);
 
     console.log("Adding additional scripts...");
     addScripts(directoryName);

@@ -24,19 +24,18 @@ const main = async (repositoryUrl, directoryName, husky) => {
         `);
   }
 
-  const randomNameGenerator = num => {
-    let res = '';
-    for(let i = 0; i < num; i++){
-       const random = Math.floor(Math.random() * 27);
-       res += String.fromCharCode(97 + random);
-    };
+  const randomNameGenerator = (num) => {
+    let res = "";
+    for (let i = 0; i < num; i++) {
+      const random = Math.floor(Math.random() * 27);
+      res += String.fromCharCode(97 + random);
+    }
     return res;
- };
+  };
 
   //Get the name of the app-directory to make
   let tmpDir = "temp" + randomNameGenerator(5);
   try {
-    
     shell.exec(`git clone ${repositoryUrl} ${tmpDir}`);
 
     //2. get the json from package.json
@@ -48,7 +47,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
 
     console.log("Now, installing react-native...");
 
-    shell.exec(`npx react-native init ${directoryName}`);
+    shell.exec(`echo N | npx react-native init ${directoryName}`);
 
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
@@ -224,3 +223,4 @@ cliSelect({
     main(tsURL, directoryName, false);
   }
 });
+

@@ -20,7 +20,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
   if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
     return console.error(`
         Invalid directory name.
-        Usage : '@atliq/react-native-starter name_of_app'
+        Usage : 'npx react-native-app-starter name_of_app'
         `);
   }
 
@@ -119,7 +119,15 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/env.config`, `${directoryName}`);
 
     console.log("Adding additional scripts...");
-    addScripts(directoryName);
+    addScripts(directoryName, husky);
+    if (husky) {
+      console.log("Installing husky hooks");
+      shell.exec("yarn", "prepare");
+    }
+    console.log("Setting up .gitignore");
+    shell.exec(
+      `echo "\n.env\n\!**/fastlane/.env" >> ${directoryName}/.gitignore`
+    );
 
     console.log(`Application generated... its ready to use.
   To get started, 
@@ -152,17 +160,48 @@ const main = async (repositoryUrl, directoryName, husky) => {
   }
 };
 
-const addScripts = (directory) => {
+const addScripts = (directory, husky) => {
   let packageJSON = JSON.parse(
     fs.readFileSync(`${directory}/package.json`, "utf8")
   );
   let scripts = packageJSON.scripts;
-  scripts.postinstall = "sh postinstall";
+  scripts = {
+    ...scripts,
+    postinstall: "sh postinstall",
+    lint: "eslint .",
+    "lint:fix": "eslint . --fix",
+    prepare: "husky install",
+    "bundle-android":
+      "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
+    "bundle-ios":
+      "npx react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle",
+    "release-ios-changelog":
+      "yarn install && yarn run generate-changelog && fastlane ios beta",
+    "release-android-changelog":
+      "yarn install && yarn run generate-changelog && fastlane android beta",
+    "release-ios-changelog-bump":
+      "yarn install && yarn run generate-changelog-bump && fastlane ios beta",
+    "release-android-changelog-bump":
+      "yarn install && yarn run generate-changelog-bump && fastlane android beta",
+    "generate-changelog":
+      'fastlane changelog build_changelog bump_type:"patch"',
+    "generate-changelog-bump": "fastlane changelog build_changelog",
+    "release-ios": "yarn install && fastlane ios beta",
+    "release-android": "yarn install && fastlane android beta",
+    release:
+      "yarn run generate-changelog && yarn run release-android && yarn run release-ios",
+    "release-bump":
+      "yarn run generate-changelog-bump && yarn run release-android && yarn run release-ios",
+  };
+  if (!husky) {
+    delete scripts.prepare;
+  }
+  packageJSON.scripts = scripts;
   fs.writeFileSync(
     `${directory}/package.json`,
     JSON.stringify(packageJSON, null, 2)
   );
-  console.log("Added postinstall script");
+  console.log("Added scripts to package.json");
 };
 
 const tsURL = "https://github.com/atliq/react-native-boilerplate-ts.git";

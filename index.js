@@ -14,7 +14,7 @@ const programOptions = program.opts();
 const main = async (repositoryUrl, directoryName, husky) => {
   console.log(`Creating new project ${directoryName}`);
   console.log(`Installing Yarn`);
-  shell.exec("npm install -g yarn@1.22.22", (code, stdout, stderr) => {
+  shell.exec("yarn add -g yarn", (code, stdout, stderr) => {
     console.log(stdout);
   });
   if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
@@ -48,28 +48,17 @@ const main = async (repositoryUrl, directoryName, husky) => {
     console.log("Now, installing react-native...");
 
     shell.exec(`echo N | npx react-native init ${directoryName}`);
-    shell.rm("-rf", "./.yarn", {
-      cwd: `${process.cwd()}`,
-    });
-    shell.rm("-rf", "./.yarnrc.yml", {
-      cwd: `${process.cwd()}`,
-    });
-    shell.exec("yarn set version 1.22.22");
-    // shell.cp(
-    //   `${process.cwd()}/new-package.json`,
-    //   `${process.cwd()}/package.json`
-    // );
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
-    shell.exec(`npm install ${dependencyList.join(" ")}`, {
+    shell.exec(`yarn add ${dependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
-    shell.exec(`npm install -D ${devDependencyList.join(" ")}`, {
+    shell.exec(`yarn add -D ${devDependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
 
     if (!husky) {
-      shell.exec(`npm uninstall husky`, {
+      shell.exec(`yarn remove husky`, {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     }

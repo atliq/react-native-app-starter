@@ -1,6 +1,6 @@
 {
   "name": "react-native-app-starter",
-  "version": "1.0.15",
+  "version": "1.0.14",
   "description": "A React Native Template.",
   "main": "index.js",
   "bin": {

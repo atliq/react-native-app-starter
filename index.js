@@ -14,7 +14,7 @@ const programOptions = program.opts();
 const main = async (repositoryUrl, directoryName, husky) => {
   console.log(`Creating new project ${directoryName}`);
   console.log(`Installing Yarn`);
-  shell.exec("npm install -g yarn", (code, stdout, stderr) => {
+  shell.exec("yarn add -g yarn", (code, stdout, stderr) => {
     console.log(stdout);
   });
   if (directoryName.match(/[<>:"\/\\|?*\x00-\x1F]/)) {
@@ -48,18 +48,17 @@ const main = async (repositoryUrl, directoryName, husky) => {
     console.log("Now, installing react-native...");
 
     shell.exec(`echo N | npx react-native init ${directoryName}`);
-
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
     shell.exec(`yarn add ${dependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
-    shell.exec(`yarn add --dev ${devDependencyList.join(" ")}`, {
+    shell.exec(`yarn add -D ${devDependencyList.join(" ")}`, {
       cwd: `${process.cwd()}/${directoryName}`,
     });
 
     if (!husky) {
-      shell.exec(`yarn remove --dev husky`, {
+      shell.exec(`yarn remove husky`, {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     }

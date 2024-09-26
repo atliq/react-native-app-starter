@@ -47,7 +47,9 @@ const main = async (repositoryUrl, directoryName, husky) => {
 
     console.log("Now, installing react-native...");
 
-    shell.exec(`echo N | npx react-native init ${directoryName}`);
+    shell.exec(
+      `echo N | npx @react-native-community/cli init ${directoryName}`
+    );
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
     shell.exec(`yarn add ${dependencyList.join(" ")}`, {

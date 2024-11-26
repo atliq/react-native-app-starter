@@ -3,9 +3,7 @@
   "version": "1.0.14",
   "description": "A React Native Template.",
   "main": "index.js",
-  "bin": {
-    "react-native-app-starter": "index.js"
-  },
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"No test specified\" && exit 1"
   },
@@ -38,6 +36,6 @@
     "cli-select": "^1.1.2",
     "commander": "^9.0.0",
     "shelljs": "^0.8.5"
-  }
+  },
+  "packageManager": "yarn@4.5.3"
 }
-

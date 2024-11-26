@@ -6,6 +6,7 @@ const shell = require("shelljs");
 
 const { program } = require("commander");
 const cliSelect = require("cli-select");
+const { cwd } = require("process");
 
 program.parse();
 
@@ -47,22 +48,24 @@ const main = async (repositoryUrl, directoryName, husky) => {
 
     console.log("Now, installing react-native...");
 
+    const shellOptions = {
+      cwd: `${process.cwd()}/${directoryName}`,
+    };
+
     shell.exec(
       `echo N | npx @react-native-community/cli init ${directoryName}`
     );
+    shell.exec("yarn set version berry", shellOptions);
+    shell.exec(`echo nodeLinker: node-modules >> .yarnrc.yml`, shellOptions);
+    shell.exec("yarn install");
+
     //3. Installing the dependencies.
     console.log("installing... ", dependencyList);
-    shell.exec(`yarn add ${dependencyList.join(" ")}`, {
-      cwd: `${process.cwd()}/${directoryName}`,
-    });
-    shell.exec(`yarn add -D ${devDependencyList.join(" ")}`, {
-      cwd: `${process.cwd()}/${directoryName}`,
-    });
+    shell.exec(`yarn add ${dependencyList.join(" ")}`, shellOptions);
+    shell.exec(`yarn add -D ${devDependencyList.join(" ")}`, shellOptions);
 
     if (!husky) {
-      shell.exec(`yarn remove husky`, {
-        cwd: `${process.cwd()}/${directoryName}`,
-      });
+      shell.exec(`yarn remove husky`, shellOptions);
     }
     const projectDirectories = directoryName.split("/");
 
@@ -89,7 +92,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/fastlane`, `${directoryName}`);
 
     if (os.type() === "Darwin") {
-      shell.exec(`npx pod-install`, {
+      shell.exec(`pod install --project-directory=ios`, {
         cwd: `${process.cwd()}/${directoryName}`,
       });
     } else {
@@ -97,7 +100,7 @@ const main = async (repositoryUrl, directoryName, husky) => {
     }
 
     if (husky) {
-      shell.exec(`npx husky install`);
+      shell.exec(`npx husky install`, shellOptions);
       shell.rm("-rf", `${directoryName}/.husky`);
       shell.mv(`${tmpDir}/.husky`, `${directoryName}`);
     }
@@ -118,12 +121,13 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/postinstall`, `${directoryName}`);
     shell.mv(`${tmpDir}/.prettierrc.js`, `${directoryName}`);
     shell.mv(`${tmpDir}/env.config`, `${directoryName}`);
+    shell.mv(`${tmpDir}/react-native-config.d.ts`, `${directoryName}`);
 
     console.log("Adding additional scripts...");
     addScripts(directoryName, husky);
     if (husky) {
       console.log("Installing husky hooks");
-      shell.exec("yarn", "prepare");
+      shell.exec("yarn", "prepare", shellOptions);
     }
     console.log("Setting up .gitignore");
     shell.exec(
@@ -205,7 +209,7 @@ const addScripts = (directory, husky) => {
   console.log("Added scripts to package.json");
 };
 
-const tsURL = "https://github.com/atliq/react-native-boilerplate-ts.git";
+const tsURL = "https://github.com/rutvik24/react-native-boilerplate-ts.git";
 
 let directoryName = process.argv[2];
 

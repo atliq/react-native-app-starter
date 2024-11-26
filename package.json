@@ -1,11 +1,9 @@
 {
   "name": "react-native-app-starter",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "A React Native Template.",
   "main": "index.js",
-  "bin": {
-    "react-native-app-starter": "index.js"
-  },
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"No test specified\" && exit 1"
   },
@@ -40,4 +38,3 @@
     "shelljs": "^0.8.5"
   }
 }
-

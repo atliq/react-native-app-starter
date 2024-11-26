@@ -36,6 +36,5 @@
     "cli-select": "^1.1.2",
     "commander": "^9.0.0",
     "shelljs": "^0.8.5"
-  },
-  "packageManager": "yarn@4.5.3"
+  }
 }

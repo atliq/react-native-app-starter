@@ -333,7 +333,7 @@ const modifyAndroidBuildGradle = (directoryName) => {
   }
 };
 
-const tsURL = "https://github.com/rutvik24/react-native-boilerplate-ts.git";
+const tsURL = "https://github.com/atliq/react-native-boilerplate-ts.git";
 
 let directoryName = process.argv[2];
 

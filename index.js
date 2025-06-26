@@ -139,6 +139,13 @@ const main = async (repositoryUrl, directoryName, husky) => {
       `echo N | npx @react-native-community/cli init ${directoryName} --pm bun`
     );
 
+    shell.exec("bun install");
+
+    //3. Installing the dependencies.
+    console.log("installing... ", dependencyList);
+    shell.exec(`bun add ${dependencyList.join(" ")}`, shellOptions);
+    shell.exec(`bun add -D ${devDependencyList.join(" ")}`, shellOptions);
+
     if (!husky) {
       shell.exec(`bun remove husky`, shellOptions);
     }
@@ -206,17 +213,17 @@ const main = async (repositoryUrl, directoryName, husky) => {
       `echo "\n.env\n\!**/fastlane/.env" >> ${directoryName}/.gitignore`
     );
 
-    shell.exec("bun install");
-
-    //3. Installing the dependencies.
-    console.log("installing... ", dependencyList);
-    shell.exec(`bun add ${dependencyList.join(" ")}`, shellOptions);
-    shell.exec(`bun add -D ${devDependencyList.join(" ")}`, shellOptions);
+    if (os.platform() !== "win32") {
+      shell.exec("sh postinstall", shellOptions);
+    } else {
+      shell.exec("node ./moduleResolver.js", shellOptions);
+      shell.exec("node ./env.config/env.config.js", shellOptions);
+    }
 
     console.log(`Application generated... its ready to use.
   To get started, 
   - cd ${directoryName}
-  - bun run dev
+  - bun run android
   `);
 
     // console.log(

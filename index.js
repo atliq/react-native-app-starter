@@ -138,12 +138,6 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.exec(
       `echo N | npx @react-native-community/cli init ${directoryName} --pm bun`
     );
-    shell.exec("bun install");
-
-    //3. Installing the dependencies.
-    console.log("installing... ", dependencyList);
-    shell.exec(`bun add ${dependencyList.join(" ")}`, shellOptions);
-    shell.exec(`bun add -D ${devDependencyList.join(" ")}`, shellOptions);
 
     if (!husky) {
       shell.exec(`bun remove husky`, shellOptions);
@@ -171,14 +165,6 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.mv(`${tmpDir}/App`, `${directoryName}`);
     shell.mv(`${tmpDir}/.env`, `${directoryName}`);
     shell.mv(`${tmpDir}/fastlane`, `${directoryName}`);
-
-    if (os.type() === "Darwin") {
-      shell.exec(`pod install --project-directory=ios`, {
-        cwd: `${process.cwd()}/${directoryName}`,
-      });
-    } else {
-      console.log("iOS setup only supported in Mac OS.");
-    }
 
     if (husky) {
       shell.exec(`npx husky install`, shellOptions);
@@ -208,6 +194,9 @@ const main = async (repositoryUrl, directoryName, husky) => {
     console.log("Configuring Android build.gradle...");
     modifyAndroidBuildGradle(directoryName);
 
+    console.log("Ensuring tsconfig.json has compilerOptions...");
+    ensureTsconfigCompilerOptions(directoryName);
+
     if (husky) {
       console.log("Installing husky hooks");
       shell.exec("bun run prepare", shellOptions);
@@ -216,6 +205,13 @@ const main = async (repositoryUrl, directoryName, husky) => {
     shell.exec(
       `echo "\n.env\n\!**/fastlane/.env" >> ${directoryName}/.gitignore`
     );
+
+    shell.exec("bun install");
+
+    //3. Installing the dependencies.
+    console.log("installing... ", dependencyList);
+    shell.exec(`bun add ${dependencyList.join(" ")}`, shellOptions);
+    shell.exec(`bun add -D ${devDependencyList.join(" ")}`, shellOptions);
 
     console.log(`Application generated... its ready to use.
   To get started, 
@@ -330,6 +326,48 @@ const modifyAndroidBuildGradle = (directoryName) => {
     }
   } catch (error) {
     console.error(`Error modifying android/app/build.gradle: ${error.message}`);
+  }
+};
+
+const ensureTsconfigCompilerOptions = (directoryName) => {
+  const tsconfigPath = `${directoryName}/tsconfig.json`;
+
+  try {
+    // Check if tsconfig.json exists
+    if (!fs.existsSync(tsconfigPath)) {
+      console.log("tsconfig.json not found, creating a new one...");
+      const defaultTsconfig = {
+        compilerOptions: {},
+      };
+      fs.writeFileSync(tsconfigPath, JSON.stringify(defaultTsconfig, null, 2));
+      console.log("Created tsconfig.json with compilerOptions");
+      return;
+    }
+
+    // Read existing tsconfig.json
+    const tsconfigContent = fs.readFileSync(tsconfigPath, "utf8");
+    let tsconfig;
+
+    try {
+      tsconfig = JSON.parse(tsconfigContent);
+    } catch (parseError) {
+      console.warn("Invalid JSON in tsconfig.json, creating a new one...");
+      tsconfig = {};
+    }
+
+    // Ensure compilerOptions exists as an object
+    if (
+      !tsconfig.compilerOptions ||
+      typeof tsconfig.compilerOptions !== "object"
+    ) {
+      tsconfig.compilerOptions = {};
+      fs.writeFileSync(tsconfigPath, JSON.stringify(tsconfig, null, 2));
+      console.log("Added compilerOptions to tsconfig.json");
+    } else {
+      console.log("compilerOptions already exists in tsconfig.json");
+    }
+  } catch (error) {
+    console.error(`Error modifying tsconfig.json: ${error.message}`);
   }
 };
 

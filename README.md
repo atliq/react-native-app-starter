@@ -10,8 +10,18 @@ The boilerplate provides **an optimized architecture for building solid cross-pl
 
 ## Getting Started
 
-```
+Creates a new React Native project with TypeScript template:
+
+```bash
+# Using npx with default package manager (bun)
 $ npx react-native-app-starter <ProjectName>
+
+# Using bunx with default package manager (bun)
+$ bunx react-native-app-starter <ProjectName>
+
+# Specifying a different package manager
+$ npx react-native-app-starter <ProjectName> --pm yarn
+$ npx react-native-app-starter <ProjectName> --pm npm
 
 $ cd <ProjectName>
 
@@ -19,6 +29,14 @@ $ npx react-native run-ios
 
 $ npx react-native run-android
 ```
+
+### Package Manager Options
+
+The CLI supports three package managers:
+
+- **bun** (default) - Automatically installed if not present
+- **yarn** - Prompts for installation if not present
+- **npm** - Should be available with Node.js installation
 
 <br/>
 
@@ -101,4 +119,58 @@ root
   </tr>
 </table>
 </details>
+
+## Development
+
+This CLI tool is built with TypeScript and provides a modular architecture for easy maintenance and testing.
+
+### Project Structure
+
+```
+├── src/
+│   ├── config/           # Configuration constants
+│   ├── services/         # Business logic services
+│   ├── utils/           # Utility functions
+│   ├── types/           # TypeScript type definitions
+│   └── index.ts         # Main exports
+├── dist/                # Compiled JavaScript output
+├── index.ts            # CLI entry point
+└── tsconfig.json       # TypeScript configuration
+```
+
+### Available Commands
+
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm run dev` - Build and run the CLI tool
+- `npm run test:modules` - Run example tests
+- `npm run clean` - Remove compiled output
+
+### Building from Source
+
+```bash
+# Clone the repository
+git clone <repo-url>
+cd react-native-app-starter
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Test the CLI
+node dist/index.js --help
+```
+
+### Running with npx/bunx
+
+After publishing, the package can be used with:
+
+```bash
+# Using npx
+npx react-native-app-starter my-app
+
+# Using bunx
+bunx react-native-app-starter my-app
+```
 

@@ -39,7 +39,7 @@ async function main(): Promise<void> {
       UIService.displayError(
         `Invalid package manager: ${packageManager}. Supported: npm, yarn, bun`
       );
-      return;
+      process.exit(1);
     }
 
     // If no project name provided, prompt user
@@ -59,7 +59,7 @@ async function main(): Promise<void> {
     // Validate directory name
     if (!isValidDirectoryName(directoryName)) {
       UIService.displayError(ERROR_MESSAGES.INVALID_DIRECTORY);
-      return;
+      process.exit(1);
     }
 
     // Create TypeScript project with specified package manager

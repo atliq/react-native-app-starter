@@ -90,6 +90,7 @@ export default class AppOrchestrator {
 
       // Final configuration
       ProjectService.setupGitignore(directoryName);
+      ProjectService.createPostinstallScripts(directoryName);
       ProjectService.runPostInstallScripts(directoryName);
 
       UIService.displaySuccessMessage(directoryName);

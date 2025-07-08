@@ -20,7 +20,7 @@ export default class ProjectService {
     const packageJSON = readJsonFile(packageJsonPath);
 
     const customScripts = {
-      postinstall: "sh postinstall",
+      postinstall: "./postinstall",
       lint: "eslint .",
       "lint:fix": "eslint . --fix",
       prepare: "husky init",
@@ -270,6 +270,66 @@ bun lint:fix`;
   }
 
   /**
+   * Creates Windows batch file for postinstall tasks
+   * @param directoryName - Project directory name
+   */
+  static createPostinstallScripts(directoryName: string): void {
+    console.log("Creating Windows postinstall batch file...");
+
+    try {
+      // Windows batch file content
+      const batContent = `@echo off
+REM Windows batch file for postinstall tasks
+
+REM Check if bun is available and set the appropriate command
+where bun >nul 2>nul
+if %errorlevel% == 0 (
+    echo Using bun as package manager...
+    set "RUNNER=bun"
+) else (
+    echo Using node as package manager...
+    set "RUNNER=node"
+)
+
+REM Run moduleResolver.js if it exists
+if exist "moduleResolver.js" (
+    echo Running moduleResolver.js...
+    %RUNNER% ./moduleResolver.js
+    if %errorlevel% neq 0 (
+        echo Error: moduleResolver.js failed to execute
+        exit /b 1
+    )
+) else (
+    echo Warning: moduleResolver.js not found, skipping...
+)
+
+REM Run env.config.js if it exists
+if exist "env.config\\env.config.js" (
+    echo Running env.config/env.config.js...
+    %RUNNER% ./env.config/env.config.js
+    if %errorlevel% neq 0 (
+        echo Error: env.config/env.config.js failed to execute
+        exit /b 1
+    )
+) else (
+    echo Warning: env.config/env.config.js not found, skipping...
+)
+
+echo Postinstall tasks completed successfully!`;
+
+      // Write only the Windows batch file (postinstall.sh is copied from template)
+      writeFileSync(`${directoryName}/postinstall.bat`, batContent);
+
+      console.log("Windows postinstall batch file created successfully");
+    } catch (error) {
+      console.error(
+        `Error creating postinstall batch file: ${(error as Error).message}`
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Runs post-installation scripts
    * @param directoryName - Project directory name
    */
@@ -278,11 +338,12 @@ bun lint:fix`;
 
     const shellOptions = { cwd: `${process.cwd()}/${directoryName}` };
 
-    if (os.platform() !== "win32") {
-      shell.exec("sh postinstall", shellOptions);
+    if (os.platform() === "win32") {
+      // Windows: Use the batch file
+      shell.exec("postinstall.bat", shellOptions);
     } else {
-      shell.exec("node ./moduleResolver.js", shellOptions);
-      shell.exec("node ./env.config/env.config.js", shellOptions);
+      // Unix-like systems: Use the shell script
+      shell.exec("sh postinstall", shellOptions);
     }
   }
 }

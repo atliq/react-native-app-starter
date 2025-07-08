@@ -36,7 +36,7 @@ export default class UIService {
       values: ["Yes", "No"],
     });
 
-    console.log(result);
+    console.log(result.value);
     return result.value === "Yes";
   }
 

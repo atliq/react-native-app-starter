@@ -21,7 +21,7 @@ export const isValidDirectoryName = (directoryName: string): boolean => {
 export const randomNameGenerator = (length: number): string => {
   let result = "";
   for (let i = 0; i < length; i++) {
-    const random = Math.floor(Math.random() * 27);
+    const random = Math.floor(Math.random() * 26);
     result += String.fromCharCode(97 + random);
   }
   return result;

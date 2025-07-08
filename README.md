@@ -48,23 +48,21 @@ root
 ├── android
 ├── ios
 └── App
-    └── Actions
-    |   ├── Keys
     └── ApiConfig
     └── AppContext
-    └── Localization
-    └── Reducers
-    |   ├──Default
     └── Routes
-    └── Sagas
     └── Screens
     |    CommonComponent
     |    Components
     |    SubComponents
     └── Services
+    └── Slices
+    |   ├──Default
     └── Stores
+    └── Thunks
     └── Theme
     |    Images
+    |    Colors
     └── Utils
 ├── fastlane
 ├── .env
@@ -77,9 +75,7 @@ root
 
 - Latest react native version
 
-- Redux saga with persistReducer
-
-- Localization
+- Redux Toolkit
 
 - Theme support (Dark / Light)
 
@@ -91,7 +87,7 @@ root
 
 - Support different env for PRODUCTION and DEVELOPMENT
 
-- User Authemntication flow
+- User Authentication flow
 
 - UI for Login, Tabs and Settings
 

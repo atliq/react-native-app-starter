@@ -89,20 +89,18 @@ export const safeRemove = (
         console.warn(
           `Attempt ${attempt} failed to remove ${path}, retrying in ${retryDelay}ms...`
         );
-        setTimeout(attemptRemoval, retryDelay);
-        return;
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      } else {
+        // Log the final error if all retries failed
+        console.error(
+          `Failed to remove temporary directory ${path} after ${attempt} attempts:`,
+          errorMessage
+        );
+        console.warn("You may need to manually delete the temporary directory.");
+        throw error;
       }
-
-      // Log the final error if all retries failed
-      console.error(
-        `Failed to remove temporary directory ${path} after ${attempt} attempts:`,
-        errorMessage
-      );
-      console.warn("You may need to manually delete the temporary directory.");
     }
-  };
-
-  attemptRemoval();
+  }
 };
 
 /**

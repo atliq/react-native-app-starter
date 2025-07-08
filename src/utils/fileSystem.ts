@@ -66,7 +66,7 @@ export const safeRemove = (
 
   let attempt = 0;
 
-  const attemptRemoval = (): void => {
+  const attemptRemoval = async (): Promise<void> => {
     try {
       rmSync(path, {
         recursive: true,
@@ -96,11 +96,13 @@ export const safeRemove = (
           `Failed to remove temporary directory ${path} after ${attempt} attempts:`,
           errorMessage
         );
-        console.warn("You may need to manually delete the temporary directory.");
+        console.warn(
+          "You may need to manually delete the temporary directory."
+        );
         throw error;
       }
     }
-  }
+  };
 };
 
 /**

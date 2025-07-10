@@ -45,6 +45,9 @@ export default class ProjectService {
         "bun run generate-changelog && bun run release-android && bun run release-ios",
       "release-bump":
         "bun run generate-changelog-bump && bun run release-android && bun run release-ios",
+      "android-clean": "cd android && ./gradlew clean && ./gradlew --stop",
+      "android-aab":
+        "bun android-clean && react-native build-android --mode=release",
     };
 
     packageJSON.scripts = {
